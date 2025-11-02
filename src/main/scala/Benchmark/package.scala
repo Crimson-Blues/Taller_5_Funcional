@@ -2,6 +2,7 @@ package object Benchmark {
   import kmedianas2D._
   import org.scalameter._
   import plotly._, element._, layout._
+  import Plotly._
 
   def tiempoDe[T](body: => T) = {
     val timeA1 = config(
@@ -12,12 +13,15 @@ package object Benchmark {
     timeA1
   }
 
-  def tiemposKmedianas(puntos:Seq[Punto], k:Int, eta:Double) = {
+  def umbral(cantidadPuntos: Int): Int = {
+    cantidadPuntos/10
+  }
 
+  def tiemposKmedianas(puntos:Seq[Punto], k:Int, eta:Double) = {
     val medianas = inicializarMedianas(k, puntos)
     val tiempoSeq = tiempoDe(kMedianasSeq(puntos, medianas, eta))
     val tiempoPar = tiempoDe(kMedianasPar(puntos, medianas, eta))
-    (tiempoSeq,tiempoPar, tiempoSeq.value / tiempoPar.value)
+    (tiempoSeq, tiempoPar, tiempoSeq.value / tiempoPar.value)
   }
 
   def probarKmedianas(puntos:Seq[Punto], k:Int, eta:Double) = {
@@ -72,14 +76,18 @@ package object Benchmark {
 
     val layoutSeq = Layout().withTitle("Plotting de puntos al azar y medianas iniciales y finales - Versión Secuencial")
 
+    print("Vamos a plotear lo secuencial")
 
-    Plotly.plot("kmedianasSeq.html", dataSeq, layoutSeq)
+    Plotly.plot("C:/Users/juanc/Desktop/kmedianasSeq.html", dataSeq, layoutSeq)
 
     // Probar lo paralelo
+    print("Llegamos a lo paralelo")
     val puntosPar = puntos
     val medianasPar = medianasSeq
     val medianasParfin = kMedianasPar(puntosPar, medianasPar, eta)
-    val clasifFinalPar = clasificarPar(umbral(puntosPar.length))(puntosPar,medianasParfin)
+    print(medianasParfin)
+    val clasifFinalPar = clasificarPar(5)(puntosPar,medianasParfin)
+    print(clasifFinalPar)
     val tiempoPar = tiempoDe(kMedianasPar(puntosPar, medianasPar, eta))
 
     // Hacer gráfica de los resultados del proceso paralelo
@@ -126,8 +134,8 @@ package object Benchmark {
 
     val layoutPar = Layout().withTitle("Plotting de puntos al azar y medianas iniciales y finales - Versión Paralela")
 
+    Plotly.plot("C:/Users/juanc/Desktop/kmedianasPar.html", dataPar.toSeq, layoutPar)
 
-    Plotly.plot("kmedianasPar.html", dataPar.toSeq, layoutPar)
     (tiempoSeq, tiempoPar, tiempoSeq.value/tiempoPar.value)
   }
 }
