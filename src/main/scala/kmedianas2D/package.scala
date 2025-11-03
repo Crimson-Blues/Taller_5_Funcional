@@ -139,8 +139,7 @@ package object kmedianas2D {
   }
 
   def inicializarMedianas(k: Int, puntos: Seq[Punto]): Seq[Punto] = {
-    val rand = new Random
-    (0 until k).map(_ => puntos(rand.nextInt(puntos.length)))
+    Random.shuffle(puntos).take(k)
   }
 
 }
