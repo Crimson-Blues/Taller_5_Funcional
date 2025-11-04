@@ -98,7 +98,7 @@ package object kmedianas2D {
 
   def hayConvergenciaPar(eta: Double, medianasViejas: Seq[Punto],
                          medianasNuevas:Seq[Punto]): Boolean ={
-    val umb = 5
+    val umb = 10
     if(medianasViejas.length <= umb) hayConvergenciaSeq(eta, medianasViejas, medianasNuevas)
     else {
       val n = medianasViejas.length
