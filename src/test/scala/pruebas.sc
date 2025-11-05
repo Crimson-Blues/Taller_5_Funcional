@@ -103,11 +103,11 @@ val hayConvergenciaPar4 = tiempoDe(hayConvergenciaPar(0.01, medianas10000_128, m
 val hayConvergenciaPar5 = tiempoDe(hayConvergenciaPar(0.01, medianas10000_5000, medianasNuevas5))
 
 //Aceleraciones:
-val accelAct1 = hayConvergenciaSeq1.value/hayConvergenciaPar1.value
-val accelAct2 = hayConvergenciaSeq2.value/hayConvergenciaPar2.value
-val accelAct3 = hayConvergenciaSeq3.value/hayConvergenciaPar3.value
-val accelAct4 = hayConvergenciaSeq4.value/hayConvergenciaPar4.value
-val accelAct5 = hayConvergenciaSeq5.value/hayConvergenciaPar5.value
+val accelConv1 = hayConvergenciaSeq1.value/hayConvergenciaPar1.value
+val accelConv2 = hayConvergenciaSeq2.value/hayConvergenciaPar2.value
+val accelConv3 = hayConvergenciaSeq3.value/hayConvergenciaPar3.value
+val accelConv4 = hayConvergenciaSeq4.value/hayConvergenciaPar4.value
+val accelConv5 = hayConvergenciaSeq5.value/hayConvergenciaPar5.value
 
 //--------Pruebas paralelismo de datos--------
 
@@ -129,8 +129,57 @@ val calculePromedioPar4 = tiempoDe(calculePromedioPar(origen, puntos10000_128))
 val calculePromedioPar5 = tiempoDe(calculePromedioPar(origen, puntos100000_256))
 
 //Aceleraciones:
-val accelAct1 = calculePromedioSeq1.value/calculePromedioPar1.value
-val accelAct2 = calculePromedioSeq2.value/calculePromedioPar2.value
-val accelAct3 = calculePromedioSeq3.value/calculePromedioPar3.value
-val accelAct4 = calculePromedioSeq4.value/calculePromedioPar4.value
-val accelAct5 = calculePromedioSeq5.value/calculePromedioPar5.value
+val accelProm1 = calculePromedioSeq1.value/calculePromedioPar1.value
+val accelProm2 = calculePromedioSeq2.value/calculePromedioPar2.value
+val accelProm3 = calculePromedioSeq3.value/calculePromedioPar3.value
+val accelProm4 = calculePromedioSeq4.value/calculePromedioPar4.value
+val accelProm5 = calculePromedioSeq5.value/calculePromedioPar5.value
+
+
+// --------- tiemposKMedianas - Tablas ---------
+tiemposKmedianas(generarPuntos(4, 256).toSeq, 4, 0.01)
+tiemposKmedianas(generarPuntos(16, 256).toSeq, 16, 0.01)
+
+tiemposKmedianas(generarPuntos(16, 1024).toSeq, 16, 0.01)
+tiemposKmedianas(generarPuntos(64, 1024).toSeq, 64, 0.01)
+
+tiemposKmedianas(generarPuntos(16, 4096).toSeq, 16, 0.01)
+tiemposKmedianas(generarPuntos(64, 4096).toSeq, 64, 0.01)
+tiemposKmedianas(generarPuntos(128, 4096).toSeq, 128, 0.01)
+
+tiemposKmedianas(generarPuntos(64, 16384).toSeq, 64, 0.01)
+tiemposKmedianas(generarPuntos(128, 16384).toSeq, 128, 0.01)
+tiemposKmedianas(generarPuntos(256, 16384).toSeq, 256, 0.01)
+
+tiemposKmedianas(generarPuntos(64, 65536).toSeq, 64, 0.01)
+tiemposKmedianas(generarPuntos(128, 65536).toSeq, 128, 0.01)
+tiemposKmedianas(generarPuntos(256, 65536).toSeq, 256, 0.01)
+
+
+// --------- Promedio de Secuencias de Puntos ---------
+/* AVISO: NO PROBAR TOMA APROX. 30 MINS
+val eta = 0.01
+val numRepeticiones = 5
+
+val configuraciones: Vector[(Int, Int)] = Vector((256, 4), (256, 16), (1024, 16), (1024, 64),
+  (4096, 16), (4096, 64), (4096, 128), (16384, 64), (16384, 128), (16384, 256), (65536, 64),
+  (65536, 128), (65536, 256))
+
+println("| #Puntos (n) | #Clusters (k) | Tiempo Sec (ms) | Tiempo Par (ms) | Aceleración |")
+println("|-------------|---------------|-----------------|-----------------|-------------|")
+
+for (i <- configuraciones.indices) {
+  val (n_val, k_val) = configuraciones(i)
+  val resultados = for (_ <- 0 until numRepeticiones) yield {
+    val puntos = generarPuntos(k_val, n_val).toSeq
+    val (tiempoSeq, tiempoPar, _) = tiemposKmedianas(puntos, k_val, eta)
+    (tiempoSeq.value, tiempoPar.value)
+  }
+  val promSeq = resultados.map(_._1).sum / numRepeticiones
+  val promPar = resultados.map(_._2).sum / numRepeticiones
+  val promAcel = promSeq / promPar
+
+  printf("| %-12d | %-13d | %-16.4f | %-15.4f | %-10.4fx |\n",
+    n_val, k_val, promSeq, promPar, promAcel)
+}
+ */
